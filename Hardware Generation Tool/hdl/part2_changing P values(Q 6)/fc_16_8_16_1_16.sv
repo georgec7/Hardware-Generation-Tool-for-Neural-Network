@@ -1,0 +1,790 @@
+//Author: George
+
+//Project 2
+
+
+module fc_16_8_16_1_16(clk, reset, input_valid, input_ready, input_data, output_valid, output_ready, output_data);
+	input 				 		clk, reset, input_valid, output_ready;
+	input signed [16-1:0]  		input_data;
+	output logic signed [16-1:0] output_data;
+	logic signed [16-1:0][16-1:0] 	output_data_f;
+	output 		 				output_valid, input_ready;
+	parameter 					WIDTH= 16; 
+	parameter                   SIZE_X= 8;
+	parameter                   SIZE_W= 8;
+	localparam          		LOGSIZE_x=$clog2(SIZE_X);
+	localparam 					LOGSIZE_w=$clog2(SIZE_W);
+	localparam                  LOGSIZE_Output=$clog2(16);
+	logic [LOGSIZE_x-1:0] 		addr_x;
+	logic [LOGSIZE_w-1:0] 		addr_w;
+	logic [LOGSIZE_Output-1:0]  output_cntr;
+	logic wr_en_x, clear_acc, en_acc, output_valid_r;
+	logic signed [16-1:0] mem_x_r;
+	
+	logic [16-1:0][16-1:0]/* mem_x_r, */ mem_w_r;// Debug Signal Removev
+	
+	logic [2:0] state, next_state, delay_cntr; // Debug signal Remove
+
+	memory #(WIDTH,SIZE_X,LOGSIZE_x) mem_x(.clk(clk),.data_in(input_data),.data_out(mem_x_r),.addr(addr_x),.wr_en(wr_en_x));
+	control_path_fc_16_8_16_1_16 #(LOGSIZE_x, LOGSIZE_w,LOGSIZE_Output) cntrl(clk,reset,input_valid,output_ready,addr_x, wr_en_x, addr_w, clear_acc, en_acc, input_ready, output_valid, output_valid_r,output_cntr,delay_cntr,state,next_state);
+
+	generate
+	genvar i;
+	for(i= 0;i<16;i=i+1)begin:data_name
+		data_path_fc_16_8_16_1_16 #(i) data(input_data, clk, reset/*, addr_x, wr_en_x*/, addr_w, clear_acc, en_acc, output_valid_r, output_data_f[i], mem_x_r, mem_w_r[i]);
+	end
+	endgenerate
+	
+	always_comb begin
+		output_data = 0;
+		if(output_cntr == 0)
+		output_data = output_data_f[0];
+		else if(output_cntr == 1)
+		output_data = output_data_f[1];
+		else if(output_cntr == 2)
+		output_data = output_data_f[2];
+		else if(output_cntr == 3)
+		output_data = output_data_f[3];
+		else if(output_cntr == 4)
+		output_data = output_data_f[4];
+		else if(output_cntr == 5)
+		output_data = output_data_f[5];
+		else if(output_cntr == 6)
+		output_data = output_data_f[6];
+		else if(output_cntr == 7)
+		output_data = output_data_f[7];
+		else if(output_cntr == 8)
+		output_data = output_data_f[8];
+		else if(output_cntr == 9)
+		output_data = output_data_f[9];
+		else if(output_cntr == 10)
+		output_data = output_data_f[10];
+		else if(output_cntr == 11)
+		output_data = output_data_f[11];
+		else if(output_cntr == 12)
+		output_data = output_data_f[12];
+		else if(output_cntr == 13)
+		output_data = output_data_f[13];
+		else if(output_cntr == 14)
+		output_data = output_data_f[14];
+		else if(output_cntr == 15)
+		output_data = output_data_f[15];
+
+	end
+	
+endmodule	
+
+
+module memory(clk, data_in, data_out,addr, wr_en);
+	parameter 			WIDTH=16, SIZE=64, ADDR_SIZE = $clog2(SIZE);
+	localparam          LOGSIZE=$clog2(SIZE);
+	input [WIDTH-1:0]	data_in;
+	output logic [WIDTH-1:0] data_out;
+	input [ADDR_SIZE-1:0] addr;
+	input				clk,wr_en;
+	logic [SIZE-1:0][WIDTH-1:0] mem;
+	always_ff @(posedge clk) begin
+		data_out<=mem[addr];
+		if(wr_en)
+			mem[addr]<=data_in;
+	end
+endmodule
+
+
+//Based of part3_mac
+module data_path_fc_16_8_16_1_16(input_data, clk, reset/*, addr_x, wr_en_x*/, addr_w, clear_acc, en_acc, output_valid_r, output_data,mem_x_r, mem_w_r);
+	parameter                   select = 0;
+	input signed [16-1:0] 		input_data;
+	input 						clk, reset/*, wr_en_x*/,clear_acc,en_acc,output_valid_r;
+	output logic signed [16-1:0] 	output_data;
+	//parameter 					WIDTH= 16; 
+	parameter                   SIZE_X= 8;
+	parameter                   SIZE_W= 8;
+	localparam          		LOGSIZE_x=$clog2(SIZE_X);
+	localparam 					LOGSIZE_w=$clog2(SIZE_W);
+	//input [LOGSIZE_x-1:0] 		addr_x;
+	input [LOGSIZE_w-1:0] 		addr_w;
+	logic signed [2*16-1:0] 		mult;
+	
+	input logic signed [16-1:0] mem_x_r;
+	output logic signed [16-1:0] /*mem_x_r,*/ mem_w_r;
+    logic signed [16-1:0] f_wire, mult_x_r_w_r,mult_x_r_w_r_delay;
+	
+	// Instantiate memory x
+	// Here WIDTH is the Width, SIZE_X is the size of the 2D memory array
+	//memory #(WIDTH,SIZE_X,LOGSIZE_x) mem_x(.clk(clk),.data_in(input_data),.data_out(mem_x_r),.addr(addr_x),.wr_en(wr_en_x));
+	
+	//Instantiate memory W
+	generate
+	if(select == 0)
+		fc_16_8_16_1_16_W_rom_0 mem_w(.clk(clk),.addr(addr_w),.z_0(mem_w_r));
+	else if(select == 1)
+		fc_16_8_16_1_16_W_rom_1 mem_w(.clk(clk),.addr(addr_w),.z_1(mem_w_r));
+	else if(select == 2)
+		fc_16_8_16_1_16_W_rom_2 mem_w(.clk(clk),.addr(addr_w),.z_2(mem_w_r));
+	else if(select == 3)
+		fc_16_8_16_1_16_W_rom_3 mem_w(.clk(clk),.addr(addr_w),.z_3(mem_w_r));
+	else if(select == 4)
+		fc_16_8_16_1_16_W_rom_4 mem_w(.clk(clk),.addr(addr_w),.z_4(mem_w_r));
+	else if(select == 5)
+		fc_16_8_16_1_16_W_rom_5 mem_w(.clk(clk),.addr(addr_w),.z_5(mem_w_r));
+	else if(select == 6)
+		fc_16_8_16_1_16_W_rom_6 mem_w(.clk(clk),.addr(addr_w),.z_6(mem_w_r));
+	else if(select == 7)
+		fc_16_8_16_1_16_W_rom_7 mem_w(.clk(clk),.addr(addr_w),.z_7(mem_w_r));
+	else if(select == 8)
+		fc_16_8_16_1_16_W_rom_8 mem_w(.clk(clk),.addr(addr_w),.z_8(mem_w_r));
+	else if(select == 9)
+		fc_16_8_16_1_16_W_rom_9 mem_w(.clk(clk),.addr(addr_w),.z_9(mem_w_r));
+	else if(select == 10)
+		fc_16_8_16_1_16_W_rom_10 mem_w(.clk(clk),.addr(addr_w),.z_10(mem_w_r));
+	else if(select == 11)
+		fc_16_8_16_1_16_W_rom_11 mem_w(.clk(clk),.addr(addr_w),.z_11(mem_w_r));
+	else if(select == 12)
+		fc_16_8_16_1_16_W_rom_12 mem_w(.clk(clk),.addr(addr_w),.z_12(mem_w_r));
+	else if(select == 13)
+		fc_16_8_16_1_16_W_rom_13 mem_w(.clk(clk),.addr(addr_w),.z_13(mem_w_r));
+	else if(select == 14)
+		fc_16_8_16_1_16_W_rom_14 mem_w(.clk(clk),.addr(addr_w),.z_14(mem_w_r));
+	else if(select == 15)
+		fc_16_8_16_1_16_W_rom_15 mem_w(.clk(clk),.addr(addr_w),.z_15(mem_w_r));
+
+	endgenerate
+	
+	// Output register f
+	always_ff @(posedge clk) begin
+		mult_x_r_w_r_delay <= mult_x_r_w_r;
+		if (reset == 1 || clear_acc == 1) begin
+			output_data   <= 0;
+			mult_x_r_w_r_delay <= 0;
+        end
+        else begin
+			if (en_acc == 1) begin
+				output_data <= f_wire;
+			end
+			if(output_valid_r == 1) begin 
+ if(output_data <= 0) 
+  output_data <= 0; 
+end
+        end
+    end
+		
+	// Multiply and accumulate with satuaration functionality
+	always_comb begin
+		mult = mem_x_r*mem_w_r;
+		if(mult > 32'sd32767)
+			mult_x_r_w_r = 16'sd32767;
+		else if(mult < -32'sd32768)
+			mult_x_r_w_r = -16'sd32768;
+		else
+			mult_x_r_w_r = mult;
+	
+		f_wire = output_data + mult_x_r_w_r_delay;
+		if (~(output_data[16-1] ^ mult_x_r_w_r_delay[16-1]) & (output_data[16-1]^f_wire[16-1])) begin
+			if(output_data[16-1] == 0)
+				f_wire = 16'sd32767;
+			else
+				f_wire = -16'sd32768;
+		end
+		else begin
+			f_wire = output_data + mult_x_r_w_r_delay;
+		end
+	end 
+endmodule
+
+
+module control_path_fc_16_8_16_1_16(clk,reset,input_valid,output_ready,addr_x, wr_en_x, addr_w, clear_acc, en_acc, input_ready, output_valid, output_valid_r,output_cntr,delay_cntr,state,next_state);
+	parameter LOGSIZE_x=3, LOGSIZE_w=9, LOGSIZE_Output = 10;
+	input clk, reset, input_valid, output_ready;
+	output logic wr_en_x, clear_acc, en_acc, input_ready, output_valid;
+	output logic [LOGSIZE_x-1:0] addr_x;
+	output logic [LOGSIZE_w-1:0] addr_w;
+	output logic [LOGSIZE_Output-1:0] output_cntr;
+	logic output_ready_r;
+	logic clr_cntr, incr_delay_cntr, clr1,clr3, incr_w_addr, clr2, incr_x_addr,incr_output_cntr;
+	output logic [2:0]delay_cntr;
+	parameter [2:0] RESET = 3'b000, LOAD_W = 3'b001, LOAD_X = 3'b010, EXEC = 3'b011, STALL1 = 3'b100,STALL = 3'b101,WAIT = 3'b110;
+	output logic [2:0] state, next_state; //Remove output logic
+	output logic output_valid_r;
+	//enum {RESET,LOAD_W,LOAD_X,EXEC,STALL1,STALL} state, next_state; 
+	logic dec_delay_cntr;
+    always_comb begin
+		clr1 		 	= 0;
+		clr2		 	= 0;
+		clr3			= 0;
+		clr_cntr 		= 0;
+        incr_w_addr  	= 0;
+		incr_x_addr	 	= 0;
+		incr_output_cntr= 0;
+		incr_delay_cntr = 0;
+		wr_en_x		 	= 0;
+		en_acc		 	= 0;
+		clear_acc 	 	= 0;
+		input_ready  	= 0;
+		output_valid 	= 0;
+		output_valid_r  = 0;
+		dec_delay_cntr  = 0;
+		
+		if (state == RESET) begin // These signals will be sampled on the second clock cycle after reset 	
+			if (input_valid == 1)begin
+				incr_x_addr = 1;
+				wr_en_x		= 1;
+			end
+			input_ready = 1;
+			clear_acc 	= 1;	
+		end
+		// For making wr_en_w to 0 so that w memory's 8th index is not over written to
+		else if (state == LOAD_X && addr_x == 0)begin 
+			if (input_valid == 1) begin
+				incr_x_addr = 1;
+				wr_en_x		= 1;
+			end
+			input_ready = 1;
+			clear_acc 	= 1;
+		end
+		// For making wr_en_w to 0 so that w memory's 8th index is not over written to
+		else if (state == LOAD_X && ~(addr_x == 8-1))begin 
+			if (input_valid == 1) begin
+				incr_x_addr = 1;
+				wr_en_x		= 1;
+			end
+			input_ready = 1;
+			clear_acc 	= 1;
+		end																
+		// Here when addr_x == 2 && addr_w == 8 means we gave loaded both x and w
+		// Here when addr_x == 2 && addr_w == 0 means only x is loaded, and addr_w reused.
+		else if (state == LOAD_X && addr_x == 8-1) begin // Next cycle move to STALL state.
+			if (input_valid == 1) begin
+				clr1 		= 1;
+				clr2		= 1;
+				wr_en_x		= 1;//Wait for next cycle to make it 0 because memory block takes this in next cycle
+			end
+			input_ready = 1;
+			clear_acc 	= 1;
+		end
+		// This STALL state is for waiting a state so that memory X's previous value(2nd index locations write) of x is not used for execution
+		else if(state == STALL1 && addr_x == 0) begin
+			incr_w_addr = 1;
+			incr_x_addr	= 1;
+			clear_acc 	= 1;
+		end
+		else if(state == EXEC && addr_w == 0 && addr_x == 0) begin // Only first cycle after entering the execution mode 
+			incr_w_addr = 1;
+			incr_x_addr	= 1;
+			en_acc		= 1;// Next cycle will have mac result of 0th index of w and 2nd index of x. We need to wait for index 0 of w and x, to enable the acc
+			// will have mac result of 8th index of w and 2nd index of x. So only in next cycle make this 1.			
+		end
+		else if(state == EXEC && ~(addr_x == 8-1)) begin
+			incr_w_addr = 1;
+			incr_x_addr	= 1;
+			en_acc		= 1;
+		end
+		else if(state == EXEC && addr_x == 8-1) begin
+			incr_delay_cntr = 1;
+			if(addr_w == (8)-1)begin
+				incr_w_addr = 0; // Stop counting when addr_w = 8 and addr_x == 2, this means that after delay =3 , we move to reset state
+			end
+			else begin
+				incr_w_addr = 1;
+			end
+			//Counter x
+			clr2		= 1;// Perform clr in the next cycle
+			if(addr_w == (8)-1)begin
+				incr_x_addr = 0;
+			end
+			else begin
+				incr_x_addr = 1;
+			end
+			en_acc		= 1;
+		end
+		else if(state == STALL && delay_cntr == 1) begin
+			//Keep the delay counter running
+			incr_delay_cntr = 1;
+			en_acc		= 1;
+		end
+		else if(state == STALL && delay_cntr == 2) begin
+			//Keep the delay counter running
+			incr_delay_cntr = 1;
+			en_acc		= 1;
+		end
+		// Keep executing this until output is read by the dest port
+		else if(state == STALL && delay_cntr == 3) begin //Change this two for pipelining
+			//stop the delay counter in the next clock cycle, but don't clear the value of 2, because we will be stuck in this loop till we get out_put ready			
+			//Keep stalling the counter till the row MAC result is read by the output stream
+			//Counter w
+			output_valid = 0;
+			output_valid_r = 1;
+			incr_delay_cntr = 1;
+			clr3 = 1;
+		end
+		else if(state == STALL && delay_cntr == 4) begin //Change this two for pipelining
+			//stop the delay counter in the next clock cycle, but don't clear the value of 2, because we will be stuck in this loop till we get out_put ready			
+			//Keep stalling the counter till the row MAC result is read by the output stream
+			//Counter w
+			output_valid = 1;
+			//output_valid_r = 1;
+			incr_delay_cntr = 1;
+		end
+		
+		// Keep executing this until output is read by the dest port
+		else if(state == STALL && delay_cntr == 5) begin //Change this two for pipelining
+			//stop the delay counter in the next clock cycle, but don't clear the value of 2, because we will be stuck in this loop till we get out_put ready
+			//Keep stalling the counter till the row MAC result is read by the output stream
+			//Counter w
+			if( output_ready_r == 1) begin
+				if(output_cntr < 16-1) begin
+					dec_delay_cntr = 1;
+					incr_output_cntr = 1;
+				end
+				else begin
+					incr_delay_cntr = 1;// Increment the delay counter one last time
+					clr3	        = 1;// Clear counter used for output logic after use
+				end
+			end 
+			else begin
+				output_valid = 1;				
+			end
+		end
+		// Here we are just bringing the clear_acc to 0, so that next cycle onwards the row mac result will be passed through
+		else if(state == STALL && delay_cntr == 6) begin  
+			//Keep the delay counter running
+			clr_cntr 		= 1;// Clear the delay counter because next cycle we start counting		
+			// Next state is RESET
+			if(addr_w == (8)-1) begin
+				//Now stall the counter till the row MAC result is read by the output stream
+				//Counter w
+				clr1 		= 1;
+				//Counter x
+				clr2		= 1;
+			end
+			// Next state is EXEC
+			else begin
+				//Counter w
+				incr_w_addr = 1;
+				incr_x_addr	= 1;
+				//en_acc		= 1;
+				clear_acc = 1;
+			end
+		end
+	end
+
+	// FSM next state logic
+	always_comb begin
+		next_state = WAIT;
+        if (state == RESET )begin
+			next_state = RESET;
+			if(input_valid == 1)
+				next_state = LOAD_X;
+		end
+		/*else if (state == LOAD_W)begin
+			next_state = LOAD_W;
+			if(input_valid ==1 && addr_w == 63)
+				next_state = LOAD_X;
+		end*/
+		else if (state == LOAD_X) begin	
+			next_state = LOAD_X;
+			if(input_valid == 1 && addr_x == 8-1)
+				next_state = STALL1;
+		end
+		else if (state == STALL1)begin
+			next_state = STALL1;
+			if(addr_x == 0 && addr_w == 0)
+				next_state = EXEC;
+		end
+		else if (state == EXEC)begin
+			next_state = EXEC;
+			if(addr_x == 8-1)
+				next_state = STALL;
+		end
+		else if(state == STALL) begin
+			next_state = STALL;
+			if(delay_cntr == 6) begin
+				if(addr_w == (8)-1)
+				next_state = RESET;
+				else
+				next_state = EXEC;
+			end
+		end
+	end	
+	
+	// FSM resgister
+	always_ff @(posedge clk) begin
+        if (reset == 1)
+            state <= RESET;
+        else
+            state <= next_state;
+    end 
+	
+	// Counter for incrementing address for memory array used to store matrix W
+	always_ff @(posedge clk) begin
+		if (reset == 1 || clr1 == 1) begin
+			addr_w 	  <= 0;	
+		end
+		else if(incr_w_addr ==1) begin	
+				addr_w <= addr_w + 1;
+		end	
+	end
+	
+	// Counter for incrementing address for memory array used to store vector x
+	always_ff @(posedge clk) begin
+		if (reset == 1 || clr2 == 1) begin
+			addr_x <= 0;	
+		end
+		else if(incr_x_addr ==1) begin		
+			addr_x <= addr_x + 1;
+		end
+	end
+	
+	// Used for ouput logic
+	always_ff @(posedge clk) begin
+		if (reset == 1 || clr3 == 1) begin
+			output_cntr <= 0;	
+		end
+		else if(incr_output_cntr ==1) begin		
+			output_cntr <= output_cntr + 1;
+		end
+	end
+	
+	// Counter for incrementing address for memory array used to store vector x
+	always_ff @(posedge clk) begin
+		if (reset == 1 || clr_cntr == 1) begin
+			delay_cntr <= 0;	
+		end
+		else if(incr_delay_cntr == 1) begin		
+			delay_cntr <= delay_cntr + 1;
+		end
+		else if(dec_delay_cntr == 1) begin		
+			delay_cntr <= delay_cntr - 1;
+		end
+	end
+	
+	//output_ready is made synchronous
+	always_ff @(posedge clk) begin
+		if (reset == 1) 
+			output_ready_r <= 0;
+		else
+			output_ready_r <= output_ready;
+	end	
+endmodule
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module fc_16_8_16_1_16_W_rom_0(clk, addr, z_0);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_0;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_0<= -16'd31;
+        1: z_0<= -16'd122;
+        2: z_0<= -16'd8;
+        3: z_0<= -16'd89;
+        4: z_0<= -16'd128;
+        5: z_0<= 16'd102;
+        6: z_0<= 16'd78;
+        7: z_0<= -16'd108;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_1(clk, addr, z_1);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_1;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_1<= -16'd119;
+        1: z_1<= -16'd43;
+        2: z_1<= 16'd9;
+        3: z_1<= 16'd41;
+        4: z_1<= -16'd73;
+        5: z_1<= 16'd12;
+        6: z_1<= -16'd53;
+        7: z_1<= 16'd47;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_2(clk, addr, z_2);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_2;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_2<= 16'd4;
+        1: z_2<= 16'd89;
+        2: z_2<= -16'd3;
+        3: z_2<= 16'd30;
+        4: z_2<= 16'd93;
+        5: z_2<= 16'd61;
+        6: z_2<= -16'd91;
+        7: z_2<= 16'd79;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_3(clk, addr, z_3);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_3;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_3<= 16'd46;
+        1: z_3<= -16'd1;
+        2: z_3<= 16'd66;
+        3: z_3<= -16'd2;
+        4: z_3<= -16'd78;
+        5: z_3<= 16'd98;
+        6: z_3<= 16'd33;
+        7: z_3<= 16'd19;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_4(clk, addr, z_4);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_4;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_4<= 16'd104;
+        1: z_4<= -16'd102;
+        2: z_4<= 16'd58;
+        3: z_4<= 16'd104;
+        4: z_4<= -16'd128;
+        5: z_4<= 16'd8;
+        6: z_4<= 16'd124;
+        7: z_4<= -16'd119;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_5(clk, addr, z_5);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_5;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_5<= 16'd94;
+        1: z_5<= 16'd5;
+        2: z_5<= 16'd51;
+        3: z_5<= -16'd107;
+        4: z_5<= -16'd111;
+        5: z_5<= 16'd126;
+        6: z_5<= 16'd68;
+        7: z_5<= 16'd21;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_6(clk, addr, z_6);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_6;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_6<= 16'd88;
+        1: z_6<= -16'd62;
+        2: z_6<= -16'd76;
+        3: z_6<= 16'd53;
+        4: z_6<= 16'd127;
+        5: z_6<= -16'd39;
+        6: z_6<= 16'd4;
+        7: z_6<= 16'd45;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_7(clk, addr, z_7);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_7;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_7<= 16'd89;
+        1: z_7<= -16'd58;
+        2: z_7<= -16'd84;
+        3: z_7<= -16'd117;
+        4: z_7<= -16'd88;
+        5: z_7<= 16'd77;
+        6: z_7<= 16'd30;
+        7: z_7<= -16'd112;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_8(clk, addr, z_8);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_8;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_8<= 16'd103;
+        1: z_8<= -16'd40;
+        2: z_8<= 16'd120;
+        3: z_8<= 16'd103;
+        4: z_8<= 16'd96;
+        5: z_8<= 16'd116;
+        6: z_8<= 16'd113;
+        7: z_8<= 16'd62;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_9(clk, addr, z_9);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_9;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_9<= -16'd7;
+        1: z_9<= 16'd36;
+        2: z_9<= 16'd84;
+        3: z_9<= 16'd10;
+        4: z_9<= 16'd34;
+        5: z_9<= 16'd24;
+        6: z_9<= -16'd96;
+        7: z_9<= -16'd6;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_10(clk, addr, z_10);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_10;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_10<= 16'd90;
+        1: z_10<= -16'd44;
+        2: z_10<= -16'd81;
+        3: z_10<= 16'd89;
+        4: z_10<= 16'd45;
+        5: z_10<= 16'd51;
+        6: z_10<= 16'd7;
+        7: z_10<= 16'd6;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_11(clk, addr, z_11);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_11;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_11<= 16'd121;
+        1: z_11<= 16'd51;
+        2: z_11<= 16'd17;
+        3: z_11<= -16'd95;
+        4: z_11<= 16'd0;
+        5: z_11<= -16'd81;
+        6: z_11<= -16'd79;
+        7: z_11<= -16'd24;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_12(clk, addr, z_12);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_12;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_12<= 16'd7;
+        1: z_12<= -16'd87;
+        2: z_12<= -16'd49;
+        3: z_12<= -16'd24;
+        4: z_12<= -16'd99;
+        5: z_12<= -16'd64;
+        6: z_12<= -16'd90;
+        7: z_12<= 16'd22;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_13(clk, addr, z_13);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_13;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_13<= 16'd100;
+        1: z_13<= 16'd122;
+        2: z_13<= -16'd95;
+        3: z_13<= 16'd7;
+        4: z_13<= 16'd19;
+        5: z_13<= -16'd63;
+        6: z_13<= -16'd127;
+        7: z_13<= -16'd19;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_14(clk, addr, z_14);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_14;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_14<= 16'd21;
+        1: z_14<= -16'd79;
+        2: z_14<= -16'd57;
+        3: z_14<= -16'd62;
+        4: z_14<= 16'd100;
+        5: z_14<= 16'd78;
+        6: z_14<= 16'd73;
+        7: z_14<= 16'd94;
+      endcase
+   end
+endmodule
+
+module fc_16_8_16_1_16_W_rom_15(clk, addr, z_15);
+   input clk;
+   input [2:0] addr;
+   output logic signed [15:0] z_15;
+   always_ff @(posedge clk) begin
+      case(addr)
+        0: z_15<= -16'd27519;
+        1: z_15<= 16'd9562;
+        2: z_15<= -16'd3329;
+        3: z_15<= 16'd10497;
+        4: z_15<= -16'd18806;
+        5: z_15<= -16'd16335;
+        6: z_15<= 16'd11113;
+        7: z_15<= 16'd13329;
+      endcase
+   end
+endmodule
+

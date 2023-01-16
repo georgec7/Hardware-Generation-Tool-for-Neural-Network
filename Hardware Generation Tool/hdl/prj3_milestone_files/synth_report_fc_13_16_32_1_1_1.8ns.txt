@@ -1,0 +1,710 @@
+
+                           Design Compiler Graphical 
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+              Version S-2021.06-SP5-4 for linux64 - Aug 05, 2022 
+
+                    Copyright (c) 1988 - 2022 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+##############################################
+# Setup: fill out the following parameters: name of clock signal, clock period (ns),
+# reset signal name (if used), name of top-level module, name of source file
+set CLK_NAME "clk";
+clk
+set CLK_PERIOD 1.8;
+1.8
+set RST_NAME "reset";
+reset
+set TOP_MOD_NAME "fc_13_16_32_1_1";
+fc_13_16_32_1_1
+set SRC_FILE "fc_13_16_32_1_1.sv";
+fc_13_16_32_1_1.sv
+# If you have multiple source files, change the line above to list them all like this:
+# set SRC_FILE [list "file1.sv" "file2.sv"];
+###############################################
+source setupdc.tcl
+NangateOpenCellLibrary_typical.db dw_foundation.sldb
+file mkdir work_synth
+# optimize FSMs
+set fsm_auto_inferring "true"; 
+true
+set fsm_enable_state_minimization "true";
+true
+define_design_lib WORK -path work_synth
+1
+analyze $SRC_FILE -format sverilog
+Running PRESTO HDLC
+Compiling source file ./fc_13_16_32_1_1.sv
+Presto compilation completed successfully.
+Loading db file '/home/home4/pmilder/ese507/synthesis/lib/NangateOpenCellLibrary_typical.db'
+Loading db file '/usr/local/synopsys/syn/S-2021.06-SP5-4/libraries/syn/dw_foundation.sldb'
+1
+elaborate -work WORK $TOP_MOD_NAME
+Loading db file '/usr/local/synopsys/syn/S-2021.06-SP5-4/libraries/syn/gtech.db'
+Loading db file '/usr/local/synopsys/syn/S-2021.06-SP5-4/libraries/syn/standard.sldb'
+  Loading link library 'NangateOpenCellLibrary'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (fc_13_16_32_1_1)
+Elaborated 1 design.
+Current design is now 'fc_13_16_32_1_1'.
+Information: Building the design 'control_path' instantiated from design 'fc_13_16_32_1_1' with
+	the parameters "4,8". (HDL-193)
+Warning:  ./fc_13_16_32_1_1.sv:161: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:171: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:192: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:199: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:207: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:197: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:252: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:270: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:303: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:313: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:319: signed to unsigned conversion occurs. (VER-318)
+
+Inferred memory devices in process
+	in routine control_path_LOGSIZE_x4_LOGSIZE_w8 line 328 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|      state_reg      | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine control_path_LOGSIZE_x4_LOGSIZE_w8 line 336 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     addr_w_reg      | Flip-flop |   8   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine control_path_LOGSIZE_x4_LOGSIZE_w8 line 346 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     addr_x_reg      | Flip-flop |   4   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine control_path_LOGSIZE_x4_LOGSIZE_w8 line 357 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   delay_cntr_reg    | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine control_path_LOGSIZE_x4_LOGSIZE_w8 line 367 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| output_ready_r_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (control_path_LOGSIZE_x4_LOGSIZE_w8)
+Information: Building the design 'data_path'. (HDL-193)
+
+Inferred memory devices in process
+	in routine data_path line 73 in file
+		'./fc_13_16_32_1_1.sv'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+| mult_x_r_w_r_delay_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|    output_data_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+Presto compilation completed successfully. (data_path)
+Information: Building the design 'memory' instantiated from design 'data_path' with
+	the parameters "32,16,4". (HDL-193)
+
+Inferred memory devices in process
+	in routine memory_WIDTH32_SIZE16_ADDR_SIZE4 line 41 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    data_out_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|       mem_reg       | Flip-flop |  512  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+=========================================================================
+|          block name/line            | Inputs | Outputs | # sel inputs |
+=========================================================================
+| memory_WIDTH32_SIZE16_ADDR_SIZE4/42 |   16   |   32    |      4       |
+=========================================================================
+Presto compilation completed successfully. (memory_WIDTH32_SIZE16_ADDR_SIZE4)
+Information: Building the design 'fc_13_16_32_1_1_W_rom'. (HDL-193)
+Warning:  ./fc_13_16_32_1_1.sv:402: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:407: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:408: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:410: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:411: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:412: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:413: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:415: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:417: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:418: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:419: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:420: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:422: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:423: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:428: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:429: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:437: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:443: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:444: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:448: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:450: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:453: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:455: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:456: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:458: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:459: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:464: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:466: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:467: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:469: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:474: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:475: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:479: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:483: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:484: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:487: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:490: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:491: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:492: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:493: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:497: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:498: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:500: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:501: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:503: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:506: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:509: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:510: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:511: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:512: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:513: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:515: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:517: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:522: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:523: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:524: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:526: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:527: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:528: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:529: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:530: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:531: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:532: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:534: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:535: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:536: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:541: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:542: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:544: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:547: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:549: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:552: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:554: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:557: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:558: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:560: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:561: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:562: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:567: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:568: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:570: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:573: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:576: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:579: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:581: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:583: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:584: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:586: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:588: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:589: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:591: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:592: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:598: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:601: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:602: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:603: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:604: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:605: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:606: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./fc_13_16_32_1_1.sv:607: unsigned to signed assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 398 in file
+	'./fc_13_16_32_1_1.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           399            |     no/auto      |
+===============================================
+
+Inferred memory devices in process
+	in routine fc_13_16_32_1_1_W_rom line 398 in file
+		'./fc_13_16_32_1_1.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|        z_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (fc_13_16_32_1_1_W_rom)
+1
+###### CLOCKS AND PORTS #######
+set CLK_PORT [get_ports $CLK_NAME]
+{clk}
+set TMP1 [remove_from_collection [all_inputs] $CLK_PORT]
+{reset input_valid input_data[31] input_data[30] input_data[29] input_data[28] input_data[27] input_data[26] input_data[25] input_data[24] input_data[23] input_data[22] input_data[21] input_data[20] input_data[19] input_data[18] input_data[17] input_data[16] input_data[15] input_data[14] input_data[13] input_data[12] input_data[11] input_data[10] input_data[9] input_data[8] input_data[7] input_data[6] input_data[5] input_data[4] input_data[3] input_data[2] input_data[1] input_data[0] output_ready}
+set INPUTS [remove_from_collection $TMP1 $RST_NAME]
+{input_valid input_data[31] input_data[30] input_data[29] input_data[28] input_data[27] input_data[26] input_data[25] input_data[24] input_data[23] input_data[22] input_data[21] input_data[20] input_data[19] input_data[18] input_data[17] input_data[16] input_data[15] input_data[14] input_data[13] input_data[12] input_data[11] input_data[10] input_data[9] input_data[8] input_data[7] input_data[6] input_data[5] input_data[4] input_data[3] input_data[2] input_data[1] input_data[0] output_ready}
+create_clock -period $CLK_PERIOD [get_ports clk]
+1
+# set delay for inputs to be 0.2ns
+set_input_delay 0.2 -max -clock clk $INPUTS
+1
+set_output_delay 0.2 -max -clock clk [all_outputs]
+1
+###### OPTIMIZATION #######
+set_max_area 0 
+1
+###### RUN #####
+compile_ultra
+Information: Performing power optimization. (PWR-850)
+Alib files are up-to-date.
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | S-2021.06-DWBB_202106.5 |     *     |
+| Licensed DW Building Blocks        | S-2021.06-DWBB_202106.5 |     *     |
+============================================================================
+
+============================================================================
+| Flow Information                                                         |
+----------------------------------------------------------------------------
+| Flow         | Design Compiler WLM                                       |
+============================================================================
+| Design Information                                      | Value          |
+============================================================================
+| Number of Scenarios                                     | 0              |
+| Leaf Cell Count                                         | 1989           |
+| Number of User Hierarchies                              | 4              |
+| Sequential Cell Count                                   | 659            |
+| Macro Count                                             | 0              |
+| Number of Power Domains                                 | 0              |
+| Design with UPF Data                                    | false          |
+============================================================================
+Information: Sequential output inversion is enabled.  SVF file must be used for formal verification. (OPT-1208)
+
+Information: There are 71 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+  Simplifying Design 'fc_13_16_32_1_1'
+
+Loaded alib file './alib-52/NangateOpenCellLibrary_typical.db.alib'
+  Building model 'DW01_NAND2'
+Information: Ungrouping hierarchy cntrl before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy data/mem_x before Pass 1 (OPT-776)
+Information: Ungrouping 2 of 5 hierarchies before Pass 1 (OPT-775)
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'fc_13_16_32_1_1_W_rom'
+Information: In design 'fc_13_16_32_1_1_W_rom', the register 'z_reg[31]' is removed because it is merged to 'z_reg[30]'. (OPT-1215)
+ Implement Synthetic for 'fc_13_16_32_1_1_W_rom'.
+  Processing 'data_path'
+ Implement Synthetic for 'data_path'.
+Information: Added key list 'DesignWare' to design 'data_path'. (DDB-72)
+  Processing 'fc_13_16_32_1_1'
+Information: Added key list 'DesignWare' to design 'fc_13_16_32_1_1'. (DDB-72)
+ Implement Synthetic for 'fc_13_16_32_1_1'.
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Mapping Optimizations  (Ultra High effort)
+  -------------------------------
+Information: Ungrouping hierarchy data 'data_path' #insts = 2231. (OPT-777)
+Information: Ungrouping hierarchy data/mem_w 'fc_13_16_32_1_1_W_rom' #insts = 754. (OPT-777)
+  Mapping Optimization (Phase 1)
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:10   14186.0      0.45     108.8     440.4                           409139.4375
+    0:00:10   14172.2      0.58     111.3     552.1                           408719.6875
+
+  Beginning Constant Register Removal
+  -----------------------------------
+    0:00:11   14406.8      1.18     130.0     463.4                           421121.2812
+    0:00:11   14405.8      1.18     130.6     463.4                           421098.6562
+
+  Beginning Global Optimizations
+  ------------------------------
+  Numerical Synthesis (Phase 1)
+  Numerical Synthesis (Phase 2)
+  Global Optimization (Phase 1)
+  Global Optimization (Phase 2)
+  Global Optimization (Phase 3)
+  Global Optimization (Phase 4)
+  Global Optimization (Phase 5)
+  Global Optimization (Phase 6)
+  Global Optimization (Phase 7)
+  Global Optimization (Phase 8)
+  Global Optimization (Phase 9)
+  Global Optimization (Phase 10)
+  Global Optimization (Phase 11)
+  Global Optimization (Phase 12)
+  Global Optimization (Phase 13)
+  Global Optimization (Phase 14)
+  Global Optimization (Phase 15)
+  Global Optimization (Phase 16)
+  Global Optimization (Phase 17)
+  Global Optimization (Phase 18)
+  Global Optimization (Phase 19)
+  Global Optimization (Phase 20)
+  Global Optimization (Phase 21)
+  Global Optimization (Phase 22)
+  Global Optimization (Phase 23)
+  Global Optimization (Phase 24)
+  Global Optimization (Phase 25)
+  Global Optimization (Phase 26)
+  Global Optimization (Phase 27)
+  Global Optimization (Phase 28)
+  Global Optimization (Phase 29)
+  Global Optimization (Phase 30)
+  Mapping 'fc_13_16_32_1_1_DW01_add_1'
+
+  Beginning Isolate Ports
+  -----------------------
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:00:12    9983.0      0.44      25.7      52.8                           209585.5469
+    0:00:20   10411.0      0.09       5.4      12.7                           225254.7344
+    0:00:20   10411.0      0.09       5.4      12.7                           225254.7344
+    0:00:21   10413.9      0.09       5.4      12.7                           225332.4219
+    0:00:24   10409.9      0.09       5.4      12.7                           225231.2969
+    0:00:24   10409.1      0.09       5.4      12.7                           225210.0938
+
+  Beginning WLM Backend Optimization
+  --------------------------------------
+    0:00:28   10277.4      0.09       5.4      12.7                           220096.0312
+    0:00:28   10278.0      0.09       5.4      12.7                           220135.6094
+    0:00:28   10278.0      0.09       5.4      12.7                           220135.6094
+    0:00:28   10264.7      0.09       5.2      12.7                           219604.0625
+    0:00:28   10264.7      0.09       5.2      12.7                           219604.0625
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:30   10331.7      0.07       2.3      12.7                           221790.5312
+    0:00:31   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:31   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:31   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:31   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:32   10338.4      0.07       2.2      12.7                           222187.8594
+    0:00:33   10338.4      0.07       2.2      12.7                           222187.8594
+
+
+  Beginning Design Rule Fixing  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:33   10338.4      0.07       2.2      12.7                           222187.8594
+  Global Optimization (Phase 31)
+  Global Optimization (Phase 32)
+  Global Optimization (Phase 33)
+    0:00:33   10330.9      0.04       1.1       0.0 data/mult_x_r_w_r_delay_reg[6]/D 221155.0312
+    0:00:34   10332.5      0.03       1.0       0.0                           221196.2656
+    0:00:35   10343.9      0.03       1.0       0.0                           221647.5000
+
+
+  Beginning Leakage Power Optimization  (max_leakage_power 0)
+  ------------------------------------
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:35   10343.9      0.03       1.0       0.0                           221647.5000
+  Global Optimization (Phase 34)
+  Global Optimization (Phase 35)
+  Global Optimization (Phase 36)
+  Global Optimization (Phase 37)
+  Global Optimization (Phase 38)
+  Global Optimization (Phase 39)
+  Global Optimization (Phase 40)
+  Global Optimization (Phase 41)
+  Global Optimization (Phase 42)
+  Global Optimization (Phase 43)
+  Global Optimization (Phase 44)
+  Global Optimization (Phase 45)
+  Global Optimization (Phase 46)
+  Global Optimization (Phase 47)
+  Global Optimization (Phase 48)
+    0:00:36   10204.8      0.01       0.4       0.0 data/mult_x_r_w_r_delay_reg[2]/D 215276.5938
+    0:00:36   10227.7      0.00       0.0       0.0                           216216.8125
+    0:00:36   10227.7      0.00       0.0       0.0                           216216.8125
+    0:00:36   10227.7      0.00       0.0       0.0                           216216.8125
+    0:00:36   10226.9      0.00       0.0       0.0                           216137.4219
+    0:00:36   10226.9      0.00       0.0       0.0                           216137.4219
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:37   10228.5      0.00       0.0       0.0                           216212.5938
+    0:00:38   10190.5      0.01       0.3       0.0                           214533.0938
+    0:00:38   10188.3      0.00       0.0       0.0                           214675.6719
+    0:00:38   10188.3      0.00       0.0       0.0                           214675.6719
+    0:00:38   10188.3      0.00       0.0       0.0                           214675.6719
+    0:00:38   10176.9      0.00       0.0       0.0                           214312.5000
+    0:00:38   10176.1      0.00       0.0       0.0                           214283.7969
+    0:00:38   10176.1      0.00       0.0       0.0                           214283.7969
+    0:00:38   10176.1      0.00       0.0       0.0                           214283.7969
+    0:00:38   10176.1      0.00       0.0       0.0                           214283.7969
+    0:00:38   10176.1      0.00       0.0       0.0                           214283.7969
+    0:00:39   10174.2      0.00       0.0       0.0                           214174.0781
+Loading db file '/home/home4/pmilder/ese507/synthesis/lib/NangateOpenCellLibrary_typical.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+1
+report_area
+ 
+****************************************
+Report : area
+Design : fc_13_16_32_1_1
+Version: S-2021.06-SP5-4
+Date   : Mon Nov 14 17:13:20 2022
+****************************************
+
+Information: Updating design information... (UID-85)
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/home4/pmilder/ese507/synthesis/lib/NangateOpenCellLibrary_typical.db)
+
+Number of ports:                           70
+Number of nets:                          6670
+Number of cells:                         6161
+Number of combinational cells:           5501
+Number of sequential cells:               658
+Number of macros/black boxes:               0
+Number of buf/inv:                       1089
+Number of references:                      47
+
+Combinational area:               7179.872037
+Buf/Inv area:                      643.720003
+Noncombinational area:            2994.361894
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                 10174.233931
+Total area:                 undefined
+1
+report_power
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : fc_13_16_32_1_1
+Version: S-2021.06-SP5-4
+Date   : Mon Nov 14 17:13:20 2022
+****************************************
+
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/home4/pmilder/ese507/synthesis/lib/NangateOpenCellLibrary_typical.db)
+
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+Design        Wire Load Model            Library
+------------------------------------------------
+fc_13_16_32_1_1        5K_hvratio_1_1    NangateOpenCellLibrary
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000ff
+    Time Units = 1ns
+    Dynamic Power Units = 1uW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  =   2.2412 mW   (76%)
+  Net Switching Power  = 726.1144 uW   (24%)
+                         ---------
+Total Dynamic Power    =   2.9673 mW  (100%)
+
+Cell Leakage Power     = 219.2563 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register       1.5895e+03           35.2713        5.2886e+04        1.6777e+03  (  52.65%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational    651.7015          690.8428        1.6637e+05        1.5089e+03  (  47.35%)
+--------------------------------------------------------------------------------------------------
+Total          2.2412e+03 uW       726.1141 uW     2.1926e+05 nW     3.1866e+03 uW
+1
+report_timing
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : fc_13_16_32_1_1
+Version: S-2021.06-SP5-4
+Date   : Mon Nov 14 17:13:20 2022
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: data/mem_x/data_out_reg[15]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: data/mult_x_r_w_r_delay_reg[1]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  fc_13_16_32_1_1    5K_hvratio_1_1        NangateOpenCellLibrary
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  data/mem_x/data_out_reg[15]/CK (DFF_X1)                 0.00       0.00 r
+  data/mem_x/data_out_reg[15]/Q (DFF_X1)                  0.09       0.09 r
+  U435/ZN (XNOR2_X1)                                      0.07       0.16 r
+  U2771/Z (BUF_X4)                                        0.09       0.26 r
+  U555/ZN (INV_X1)                                        0.05       0.31 f
+  U3029/ZN (AND2_X1)                                      0.05       0.35 f
+  U3060/CO (FA_X1)                                        0.10       0.45 f
+  U3078/CO (FA_X1)                                        0.10       0.56 f
+  U3185/CO (FA_X1)                                        0.09       0.65 f
+  U3468/S (FA_X1)                                         0.13       0.78 r
+  U3472/S (FA_X1)                                         0.11       0.90 f
+  U165/ZN (NOR2_X1)                                       0.06       0.96 r
+  U3395/ZN (OAI21_X1)                                     0.04       1.00 f
+  U3396/ZN (AOI21_X1)                                     0.06       1.06 r
+  U3534/ZN (OAI21_X1)                                     0.03       1.09 f
+  U3657/ZN (AOI21_X1)                                     0.05       1.14 r
+  U3696/ZN (OAI21_X1)                                     0.04       1.18 f
+  U3697/ZN (NAND2_X1)                                     0.04       1.22 r
+  U3713/ZN (NAND2_X1)                                     0.07       1.28 f
+  U4203/Z (BUF_X1)                                        0.06       1.34 f
+  U4425/ZN (AOI21_X1)                                     0.04       1.38 r
+  U4427/ZN (XNOR2_X1)                                     0.06       1.45 r
+  U4434/ZN (NAND2_X1)                                     0.03       1.48 f
+  U4439/ZN (AOI21_X1)                                     0.04       1.52 r
+  U4440/ZN (OAI21_X1)                                     0.03       1.55 f
+  U4441/ZN (AOI21_X1)                                     0.06       1.61 r
+  U4479/ZN (NOR2_X1)                                      0.03       1.65 f
+  U4480/Z (BUF_X2)                                        0.05       1.70 f
+  U4593/ZN (OR2_X1)                                       0.06       1.75 f
+  data/mult_x_r_w_r_delay_reg[1]/D (DFF_X1)               0.01       1.76 f
+  data arrival time                                                  1.76
+
+  clock clk (rise edge)                                   1.80       1.80
+  clock network delay (ideal)                             0.00       1.80
+  data/mult_x_r_w_r_delay_reg[1]/CK (DFF_X1)              0.00       1.80 r
+  library setup time                                     -0.04       1.76
+  data required time                                                 1.76
+  --------------------------------------------------------------------------
+  data required time                                                 1.76
+  data arrival time                                                 -1.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
+write -f verilog $TOP_MOD_NAME -output gates.v -hierarchy
+Writing verilog file '/home/home5/lahariy/ese507/proj3/prj3_sub_milest/gates.v'.
+1
+quit
+
+Memory usage for this session 157 Mbytes.
+Memory usage for this session including child processes 172 Mbytes.
+CPU usage for this session 39 seconds ( 0.01 hours ).
+Elapsed time for this session 42 seconds ( 0.01 hours ).
+
+Thank you...
